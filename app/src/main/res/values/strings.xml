@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">GoComplaint</string>
+    <string name="heading_login">Login Account</string>
+    <string name="heading_regis">Create Account</string>
+    <string name="subhead_login">Please enter your email address below to use the app.</string>
+    <string name="subhead_regis">Please enter your information below to create a new account to use the app.</string>
+    <string name="plchldr_email">Email</string>
+    <string name="plchldr_pw">Password</string>
+    <string name="full_name">Full Name</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="regis_desc">Not a member?</string>
+    <string name="login_desc">Already have an account?</string>
 </resources>
