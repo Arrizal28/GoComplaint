@@ -13,7 +13,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,9 +46,9 @@ import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 
 @Composable
 fun RegisterScreen() {
+    RegisterScreenContent()
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreenContent(
     modifier: Modifier = Modifier
@@ -76,12 +75,14 @@ fun RegisterScreenContent(
     ) {
         Text(
             text = stringResource(R.string.heading_regis),
+            color = Color.Black,
             fontFamily = poppinsFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 32.sp
         )
         Text(
             text = stringResource(R.string.subhead_regis),
+            color = MaterialTheme.colorScheme.onPrimary,
             fontFamily = poppinsFontFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
@@ -108,11 +109,13 @@ fun RegisterScreenContent(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
             ),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.tertiary,
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
             )
         )
         OutlinedTextField(
@@ -135,11 +138,13 @@ fun RegisterScreenContent(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
             ),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.tertiary,
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
             )
         )
         OutlinedTextField(
@@ -173,11 +178,13 @@ fun RegisterScreenContent(
                     Icon(imageVector = image, description)
                 }
             },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.tertiary,
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
                 focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
             )

@@ -11,4 +11,7 @@
     <string name="register">Register</string>
     <string name="regis_desc">Not a member?</string>
     <string name="login_desc">Already have an account?</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_add">Add</string>
+    <string name="menu_history">History</string>
 </resources>

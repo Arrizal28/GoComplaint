@@ -1,6 +1,7 @@
 package com.bangkit.gocomplaint.ui.screen.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,22 +40,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.bangkit.gocomplaint.R
 import com.bangkit.gocomplaint.ui.components.BasicButton
+import com.bangkit.gocomplaint.ui.navigation.Screen
 import com.bangkit.gocomplaint.ui.theme.GoComplaintTheme
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 
 @Composable
 fun LoginScreen(
-
+    modifier: Modifier = Modifier,
+    navigateToRegister: () -> Unit
 ) {
-
+    LoginScreenContent(
+        onClick = {
+            navigateToRegister()
+        }
+    )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreenContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -78,12 +86,14 @@ fun LoginScreenContent(
     ) {
         Text(
             text = stringResource(R.string.heading_login),
+            color = Color.Black,
             fontFamily = poppinsFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 32.sp
         )
         Text(
             text = stringResource(R.string.subhead_login),
+            color = MaterialTheme.colorScheme.onPrimary,
             fontFamily = poppinsFontFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
@@ -110,11 +120,13 @@ fun LoginScreenContent(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next,
             ),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.tertiary,
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
             )
         )
         OutlinedTextField(
@@ -148,11 +160,13 @@ fun LoginScreenContent(
                     Icon(imageVector = image, description)
                 }
             },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.tertiary,
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
                 focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
             )
@@ -178,6 +192,7 @@ fun LoginScreenContent(
                 color = MaterialTheme.colorScheme.onPrimary
             )
             Text(
+                modifier = modifier.clickable{ onClick() },
                 text = stringResource(R.string.register),
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.ExtraLight,
@@ -188,10 +203,14 @@ fun LoginScreenContent(
     }
 }
 
-@Composable
 @Preview(showBackground = true)
-fun LoginScreenPreview() {
+@Composable
+fun LoginScreenPreview(
+    navController: NavHostController = rememberNavController(),
+) {
     GoComplaintTheme {
-        LoginScreenContent()
+        LoginScreen(
+            navigateToRegister = { navController.navigate(Screen.Register.route) }
+        )
     }
 }
