@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bangkit.gocomplaint.R
@@ -22,13 +23,16 @@ import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 @Composable
 fun BasicButton(
     text: String,
+    fontSize: TextUnit,
     onClick: () -> Unit,
+    color: Color,
+    containerColor: Color,
     modifier: Modifier = Modifier,
 ) {
     Button(
         onClick = {onClick() },
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
+            containerColor = containerColor,
         ),
         shape = RoundedCornerShape(size = 10.dp),
         modifier = modifier
@@ -36,7 +40,8 @@ fun BasicButton(
         Text(text = text,
             fontFamily = poppinsFontFamily,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp,
-            color = Color.White)
+            fontSize = fontSize,
+            color = color,
+        )
     }
 }

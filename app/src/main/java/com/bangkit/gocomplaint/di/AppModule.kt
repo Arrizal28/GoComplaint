@@ -1,4 +1,4 @@
-package com.bangkit.gocomplaint.ui.di
+package com.bangkit.gocomplaint.di
 
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -6,5 +6,6 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object AppModule{
+
 }

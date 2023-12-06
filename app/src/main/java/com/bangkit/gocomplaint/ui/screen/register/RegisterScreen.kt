@@ -192,6 +192,9 @@ fun RegisterScreenContent(
         BasicButton(
             text = stringResource(R.string.login),
             onClick = {},
+            containerColor = MaterialTheme.colorScheme.primary,
+            color = Color.White,
+            fontSize = 16.sp,
             modifier = modifier
                 .fillMaxWidth()
                 .padding(top = 24.dp)

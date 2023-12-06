@@ -15,6 +15,7 @@ import com.bangkit.gocomplaint.ui.theme.GoComplaintTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.bangkit.gocomplaint.ui.components.MyFloatingButton
 import com.bangkit.gocomplaint.ui.screen.add.AddScreen
 import com.bangkit.gocomplaint.ui.screen.history.HistoryScreen
 import com.bangkit.gocomplaint.ui.screen.login.LoginScreen
@@ -30,8 +31,12 @@ fun GoComplaintApp(
 
     Scaffold(
         bottomBar = {
-            if (currentRoute == Screen.Home.route || currentRoute == Screen.Add.route || currentRoute == Screen.History.route)
+            if (currentRoute == Screen.Home.route || currentRoute == Screen.History.route)
                 MyBottomBar(navController = navController)
+        },
+        floatingActionButton = {
+            if (currentRoute == Screen.Add.route)
+                MyFloatingButton(onClick = { /*TODO*/ })
         },
         modifier = modifier,
     ) { innerPadding ->
