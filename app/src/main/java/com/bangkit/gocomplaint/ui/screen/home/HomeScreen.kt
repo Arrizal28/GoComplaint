@@ -2,9 +2,7 @@ package com.bangkit.gocomplaint.ui.screen.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,31 +29,67 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.PagingData
 import com.bangkit.gocomplaint.R
-import com.bangkit.gocomplaint.ui.theme.GoComplaintTheme
+import com.bangkit.gocomplaint.ViewModelFactory
+import com.bangkit.gocomplaint.data.model.ComplaintsItem
+import com.bangkit.gocomplaint.ui.components.ComplaintList
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    navigateToRegister: () -> Unit
+    viewModel: HomeViewModel = viewModel(
+        factory = ViewModelFactory.getInstance(LocalContext.current)
+    ),
+    navigateToRegister: () -> Unit,
+    navigateToDetail: (Int) -> Unit
 ) {
+
+//    LaunchedEffect(Unit) {
+//        viewModel.getSession().collect { user ->
+//            if (user.token == "") {
+//                navigateToRegister()
+//            }
+//        }
+//    }
+
     HomeContent(
         modifier = modifier,
-        search = {  }
+        listComplaints = viewModel.complaint,
+        search = { },
+        navigateToDetail = navigateToDetail
     )
+
+//    val uiComplaintState by viewModel.uiComplaintState.collectAsState()
+
+//    when (uiComplaintState) {
+//        is UiState.Loading -> {
+//            Loading()
+//        }
+//        is UiState.Success -> {
+//            val complaintResponse = (uiComplaintState as UiState.Success<ComplaintResponse>).data
+//        }
+//        is UiState.Error -> {
+//            Error()
+//        }
+//    }
 }
 
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
-    search: () -> Unit
+    listComplaints: Flow<PagingData<ComplaintsItem>>,
+    search: () -> Unit,
+    navigateToDetail: (Int) -> Unit
 ) {
     var query by remember { mutableStateOf("") }
 
@@ -117,13 +151,18 @@ fun HomeContent(
                     .clip(CircleShape)
             )
         }
+        ComplaintList(
+            modifier = modifier,
+            listComplaints = listComplaints,
+            navigateToDetail = navigateToDetail
+        )
     }
 }
 
-@Preview
-@Composable
-fun PreviewHomeScreen() {
-    GoComplaintTheme {
-        HomeContent(search = {})
-    }
-}
+//@Preview
+//@Composable
+//fun PreviewHomeScreen() {
+//    GoComplaintTheme {
+//        HomeScreen(navigateToRegister = { })
+//    }
+//}

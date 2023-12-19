@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="App.Starting.Theme" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground" >#FF79AC78</item>
+        <item name="windowSplashScreenBackground" >#FFFFFF</item>
         <item name="windowSplashScreenAnimatedIcon" >@drawable/gocomplaint</item>
         <item name="postSplashScreenTheme" >@style/Theme.GoComplaint</item>
     </style>

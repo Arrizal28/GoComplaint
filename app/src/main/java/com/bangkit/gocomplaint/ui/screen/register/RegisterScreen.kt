@@ -1,6 +1,8 @@
 package com.bangkit.gocomplaint.ui.screen.register
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +22,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,27 +41,110 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.gocomplaint.R
+import com.bangkit.gocomplaint.ViewModelFactory
+import com.bangkit.gocomplaint.data.model.RegisterRequest
+import com.bangkit.gocomplaint.ui.common.UiState
 import com.bangkit.gocomplaint.ui.components.BasicButton
-import com.bangkit.gocomplaint.ui.theme.GoComplaintTheme
+import com.bangkit.gocomplaint.ui.screen.Error
+import com.bangkit.gocomplaint.ui.screen.Loading
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 
 @Composable
-fun RegisterScreen() {
-    RegisterScreenContent()
+fun RegisterScreen(
+    modifier: Modifier = Modifier,
+    viewModel: RegisterViewModel = viewModel(
+        factory = ViewModelFactory.getInstance(LocalContext.current)
+    ),
+    navigateToLogin: () -> Unit,
+    navigateToHome: () -> Unit
+) {
+    viewModel.getAccessToken()
+
+    val uiState by viewModel.uiState.collectAsState()
+    val uiRegisState by viewModel.uiRegisState.collectAsState()
+
+    when (uiState) {
+        is UiState.Loading -> {
+            Loading()
+        }
+
+        is UiState.Success -> {
+            if (uiRegisState?.token != "") {
+                Toast.makeText(
+                    LocalContext.current,
+                    R.string.registration_successful,
+                    Toast.LENGTH_SHORT
+                ).show()
+                navigateToHome()
+            }
+        }
+
+        is UiState.Error -> {
+            Error()
+        }
+    }
+
+    RegisterScreenContent(
+        modifier = modifier,
+        navigateToLogin = navigateToLogin,
+        onClick = {
+            viewModel.register(
+                RegisterRequest(
+                    username = it.username,
+                    email = it.email,
+                    password = it.password,
+                    confPassword = it.confPassword
+                )
+            )
+        }
+    )
 }
 
 @Composable
 fun RegisterScreenContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (RegisterRequest) -> Unit,
+    navigateToLogin: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var confPasswordVisible by remember { mutableStateOf(false) }
+    var isError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
+
+    fun validPassword(pw: String) {
+        passwordError = pw.length < 8
+    }
+
+    fun validEmail(email: String) {
+        isError = !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    val isNotMatching = remember {
+        derivedStateOf {
+            password != confPassword
+        }
+    }
+
+    val disableButton = remember {
+        derivedStateOf {
+            email.isEmpty() || username.isEmpty() || password.isEmpty() || confPassword.isEmpty() || isNotMatching.value || isError
+        }
+    }
+
+    val registrationInfo = RegisterRequest(
+        email = email,
+        username = username,
+        password = password,
+        confPassword = confPassword
+    )
 
     Box(modifier.fillMaxSize()) {
         Image(
@@ -90,7 +178,7 @@ fun RegisterScreenContent(
             modifier = modifier.padding(top = 24.dp, bottom = 48.dp)
         )
         OutlinedTextField(
-            value = username,
+            value = registrationInfo.username,
             onValueChange = { username = it },
             modifier = modifier
                 .fillMaxWidth()
@@ -119,8 +207,11 @@ fun RegisterScreenContent(
             )
         )
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
+            value = registrationInfo.email,
+            onValueChange = {
+                email = it
+                validEmail(it)
+            },
             modifier = modifier
                 .fillMaxWidth()
                 .padding(bottom = 24.dp),
@@ -145,13 +236,32 @@ fun RegisterScreenContent(
                 disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
-            )
+                errorContainerColor = MaterialTheme.colorScheme.tertiary,
+                errorIndicatorColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+            supportingText = {
+                if (isError) {
+                    Text(
+                        text = stringResource(R.string.invalid_email_format),
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp,
+                        color = Color.Red
+                    )
+                }
+            },
+            isError = isError,
         )
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = registrationInfo.password,
+            onValueChange = {
+                password = it
+                validPassword(it)
+            },
             modifier = modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
             shape = RoundedCornerShape(size = 10.dp),
             placeholder = {
                 Text(
@@ -187,17 +297,90 @@ fun RegisterScreenContent(
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-            )
+                errorContainerColor = MaterialTheme.colorScheme.tertiary,
+                errorIndicatorColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+            isError = passwordError,
+            supportingText = {
+                if (passwordError) {
+                    Text(
+                        text = stringResource(R.string.password_error),
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp,
+                        color = Color.Red
+                    )
+                }
+            }
+        )
+        OutlinedTextField(
+            value = registrationInfo.confPassword,
+            onValueChange = { confPassword = it },
+            modifier = modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(size = 10.dp),
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.plchldr_pw),
+                    fontFamily = poppinsFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            },
+            visualTransformation = if (confPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Go,
+            ),
+            trailingIcon = {
+                val image = if (confPasswordVisible)
+                    Icons.Filled.Visibility
+                else Icons.Filled.VisibilityOff
+
+                val description = if (confPasswordVisible) "Hide password" else "Show password"
+
+                IconButton(onClick = { confPasswordVisible = !confPasswordVisible }) {
+                    Icon(imageVector = image, description)
+                }
+            },
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                disabledContainerColor = MaterialTheme.colorScheme.tertiary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                errorContainerColor = MaterialTheme.colorScheme.tertiary,
+                errorIndicatorColor = MaterialTheme.colorScheme.tertiary,
+                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+            isError = isNotMatching.value,
+            supportingText = {
+                if (isNotMatching.value) {
+                    Text(
+                        text = stringResource(R.string.password_not_match),
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp,
+                        color = Color.Red
+                    )
+                }
+            }
         )
         BasicButton(
-            text = stringResource(R.string.login),
-            onClick = {},
+            text = stringResource(R.string.register),
+            onClick = { onClick(registrationInfo) },
             containerColor = MaterialTheme.colorScheme.primary,
             color = Color.White,
             fontSize = 16.sp,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(top = 24.dp)
+                .padding(top = 24.dp),
+            enabled = !disableButton.value
         )
         Row(
             modifier = modifier
@@ -206,14 +389,15 @@ fun RegisterScreenContent(
             horizontalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = stringResource(R.string.regis_desc),
+                modifier = modifier.clickable { navigateToLogin() },
+                text = stringResource(R.string.regis_to_login),
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.ExtraLight,
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onPrimary
             )
             Text(
-                text = stringResource(R.string.register),
+                text = stringResource(R.string.login),
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.ExtraLight,
                 fontSize = 12.sp,
@@ -223,11 +407,11 @@ fun RegisterScreenContent(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreenPreview() {
-    GoComplaintTheme {
-        RegisterScreenContent()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun RegisterScreenPreview() {
+//    GoComplaintTheme {
+//        RegisterScreenContent()
+//    }
+//}
 

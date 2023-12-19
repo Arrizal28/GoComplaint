@@ -8,33 +8,46 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowUpward
-import androidx.compose.material.icons.outlined.Comment
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bangkit.gocomplaint.R
+import com.bangkit.gocomplaint.data.model.CommentsItem
+import com.bangkit.gocomplaint.data.model.ComplaintResponse
+import com.bangkit.gocomplaint.data.model.DetailResponse
 import com.bangkit.gocomplaint.ui.theme.GoComplaintTheme
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
+import com.bangkit.gocomplaint.util.calculateTimeDifference
+
+@Composable
+fun CommentList(
+    modifier: Modifier = Modifier,
+    item: DetailResponse
+) {
+    LazyColumn {
+        items(count = item.comments.size, itemContent = {index ->
+            CommentItem(
+                item = item.comments[index]
+            )
+        })
+    }
+}
 
 @Composable
 fun CommentItem(
     modifier: Modifier = Modifier,
+    item: CommentsItem
 ) {
     Column(
         modifier = modifier
@@ -65,14 +78,14 @@ fun CommentItem(
                         .padding(bottom = 8.dp)
                 ) {
                     Text(
-                        text = "Nama",
+                        text = item.username,
                         fontFamily = poppinsFontFamily,
                         fontWeight = FontWeight.Light,
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                     Text(
-                        text = "Tanggal",
+                        text = item.createdAt.calculateTimeDifference(),
                         fontFamily = poppinsFontFamily,
                         fontWeight = FontWeight.Light,
                         fontSize = 12.sp,
@@ -80,7 +93,7 @@ fun CommentItem(
                     )
                 }
                 Text(
-                    text = "Complaint", modifier = modifier.padding(bottom = 8.dp),
+                    text = item.comment, modifier = modifier.padding(bottom = 8.dp),
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.Light,
                     fontSize = 12.sp,
@@ -97,10 +110,10 @@ fun CommentItem(
     }
 }
 
-@Preview
-@Composable
-fun PreviewCommentItem() {
-    GoComplaintTheme {
-        CommentItem()
-    }
-}
+//@Preview
+//@Composable
+//fun PreviewCommentItem() {
+//    GoComplaintTheme {
+//        CommentItem()
+//    }
+//}

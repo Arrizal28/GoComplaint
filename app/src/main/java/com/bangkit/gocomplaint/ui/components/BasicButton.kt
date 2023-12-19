@@ -28,6 +28,7 @@ fun BasicButton(
     color: Color,
     containerColor: Color,
     modifier: Modifier = Modifier,
+    enabled: Boolean
 ) {
     Button(
         onClick = {onClick() },
@@ -35,7 +36,8 @@ fun BasicButton(
             containerColor = containerColor,
         ),
         shape = RoundedCornerShape(size = 10.dp),
-        modifier = modifier
+        modifier = modifier,
+        enabled = enabled
     ) {
         Text(text = text,
             fontFamily = poppinsFontFamily,
