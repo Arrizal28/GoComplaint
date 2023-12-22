@@ -2,6 +2,7 @@ package com.bangkit.gocomplaint.ui.screen.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bangkit.gocomplaint.data.model.AddComplaintResponse
 import com.bangkit.gocomplaint.data.model.ComplaintResponse
 import com.bangkit.gocomplaint.data.pref.UserModel
 import com.bangkit.gocomplaint.data.repository.NeedHeaderRepository
@@ -18,11 +19,25 @@ class ProfileViewModel(private val repository: UserRepository, private val needH
     val uiState: StateFlow<UiState<ComplaintResponse>>
         get() = _uiState
 
+    private val _uiDeleteState: MutableStateFlow<UiState<AddComplaintResponse>> = MutableStateFlow(UiState.Loading)
+    val uiDeleteState: StateFlow<UiState<AddComplaintResponse>>
+        get() = _uiDeleteState
+
     fun getProfile(id: String) {
         viewModelScope.launch {
             needHeaderRepository.getDetailHistory(id)
                 .collect { history ->
                     _uiState.value = UiState.Success(history as ComplaintResponse)
+                }
+        }
+    }
+
+    fun deleteComplaint(id: String) {
+        _uiDeleteState.value = UiState.Loading
+        viewModelScope.launch {
+            needHeaderRepository.deleteComplaint(id)
+                .collect { history ->
+                    _uiDeleteState.value = UiState.Success(history as AddComplaintResponse)
                 }
         }
     }

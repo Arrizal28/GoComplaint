@@ -222,7 +222,7 @@ fun RegisterScreenContent(
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = Color(0xff979797)
                 )
             },
             keyboardOptions = KeyboardOptions(
@@ -290,8 +290,8 @@ fun RegisterScreenContent(
             },
             colors = TextFieldDefaults.colors(
                 focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                focusedContainerColor = Color(0xffE3E3E3),
+                unfocusedContainerColor = Color(0xffE3E3E3),
                 disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
@@ -326,7 +326,7 @@ fun RegisterScreenContent(
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = Color(0xff979797)
                 )
             },
             visualTransformation = if (confPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -347,13 +347,13 @@ fun RegisterScreenContent(
             },
             colors = TextFieldDefaults.colors(
                 focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                focusedContainerColor = Color(0xffE3E3E3),
+                unfocusedContainerColor = Color(0xffE3E3E3),
                 disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedTrailingIconColor = Color(0xff979797),
                 errorContainerColor = MaterialTheme.colorScheme.tertiary,
                 errorIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
@@ -406,12 +406,4 @@ fun RegisterScreenContent(
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun RegisterScreenPreview() {
-//    GoComplaintTheme {
-//        RegisterScreenContent()
-//    }
-//}
 

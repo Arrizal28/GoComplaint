@@ -8,6 +8,7 @@ import com.bangkit.gocomplaint.data.model.RegisterRequest
 import com.bangkit.gocomplaint.data.pref.UserModel
 import com.bangkit.gocomplaint.data.repository.UserRepository
 import com.bangkit.gocomplaint.ui.common.UiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,11 +23,11 @@ class RegisterViewModel(private val repository: UserRepository) : ViewModel() {
     val uiRegisState: StateFlow<UserModel?> get() = _uiRegisState
 
     fun register(registerRequest: RegisterRequest) {
+        _uiState.value = UiState.Loading
         viewModelScope.launch {
-            _uiState.value = UiState.Loading
             val uiState = repository.register(registerRequest)
             val expiryTime = Calendar.getInstance().apply {
-                add(Calendar.DAY_OF_MONTH, 30) // Menambahkan 30 hari
+                add(Calendar.DAY_OF_MONTH, 30)
             }.timeInMillis
             _uiState.value = when (uiState) {
                 is UiState.Success -> {

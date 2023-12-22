@@ -16,17 +16,17 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = OliveGreen,
+    primary = Green,
     secondary = AsparagusGreen,
-    tertiary = PaleRobinEgggreen,
-    onPrimary = Grey,
+    tertiary = White,
+    onPrimary = Black,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = OliveGreen,
-    secondary = AsparagusGreen,
-    tertiary = PaleRobinEgggreen,
-    onPrimary = Grey,
+    primary = Green,
+    secondary = Grey,
+    tertiary = White,
+    onPrimary = Black,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -52,7 +52,7 @@ fun GoComplaintTheme(
 //            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
 //        }
 
-        darkTheme -> DarkColorScheme
+//        darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
     val view = LocalView.current

@@ -1,6 +1,7 @@
 package com.bangkit.gocomplaint.data.repository
 
 import com.bangkit.gocomplaint.data.api.ApiService
+import com.bangkit.gocomplaint.data.model.AddCommentRequest
 import com.bangkit.gocomplaint.data.pref.UserPreference
 import kotlinx.coroutines.flow.flow
 import okhttp3.MediaType.Companion.toMediaType
@@ -19,7 +20,7 @@ class NeedHeaderRepository(
             val successResponse = apiService.getHistory(id)
             emit(successResponse)
         } catch (e: HttpException) {
-            emit("Failed To Load Data")
+
         }
     }
 
@@ -43,9 +44,24 @@ class NeedHeaderRepository(
                 )
                 emit(successResponse)
             } catch (e: HttpException) {
-                emit("Failed To Load Data")
             }
         }
+
+    fun addComment(addCommentRequest: AddCommentRequest) = flow {
+        try {
+            val successResponse = apiService.addComment(addCommentRequest)
+            emit(successResponse)
+        } catch (e: HttpException) {
+        }
+    }
+
+    fun deleteComplaint(id: String) = flow {
+        try {
+            val successResponse = apiService.deleteComplaint(id)
+            emit(successResponse)
+        } catch (e: HttpException) {
+        }
+    }
 
     companion object {
         @Volatile

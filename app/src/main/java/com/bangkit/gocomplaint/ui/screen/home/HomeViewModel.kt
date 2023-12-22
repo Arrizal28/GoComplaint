@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.bangkit.gocomplaint.data.model.AddCommentRequest
+import com.bangkit.gocomplaint.data.model.AddComplaintResponse
 import com.bangkit.gocomplaint.data.model.ComplaintsItem
 import com.bangkit.gocomplaint.data.pref.UserModel
 import com.bangkit.gocomplaint.data.repository.ComplaintRepository
+import com.bangkit.gocomplaint.data.repository.NeedHeaderRepository
 import com.bangkit.gocomplaint.data.repository.UserRepository
 import com.bangkit.gocomplaint.ui.common.UiState
 import com.bangkit.gocomplaint.ui.navigation.Screen
@@ -18,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: UserRepository,
-    private val complaintRepository: ComplaintRepository
+    private val complaintRepository: ComplaintRepository,
 ) : ViewModel() {
 
     private val _startDestination = MutableStateFlow<String?>(null)
@@ -28,36 +31,11 @@ class HomeViewModel(
     val uiState: StateFlow<UiState<UserModel>>
         get() = _uiState
 
-    private val _uiComplaintState: MutableStateFlow<UiState<PagingData<ComplaintsItem>>> =
-        MutableStateFlow(UiState.Loading)
-    val uiComplaintState: StateFlow<UiState<PagingData<ComplaintsItem>>>
-        get() = _uiComplaintState
-
-//    fun getComplaints() {
-//        viewModelScope.launch {
-//            _uiComplaintState.value = UiState.Loading
-//            complaintRepository.getComplaints()
-//                .catch {
-//                    _uiComplaintState.value = UiState.Error(it.message.toString())
-//                }
-//                .collect { complaint ->
-//                    _uiComplaintState.value = complaint
-//                }
-//        }
-//    }
-
-
     val complaint: Flow<PagingData<ComplaintsItem>> =
-        complaintRepository.getComplaints().cachedIn(viewModelScope)
+        complaintRepository.getComplaints()
 
     init {
         getSession()
-    }
-
-    fun saveSession(user: UserModel) {
-        viewModelScope.launch {
-            repository.saveSession(user)
-        }
     }
 
     fun getSession() {
@@ -79,9 +57,4 @@ class HomeViewModel(
         }
     }
 
-    fun logout() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.logout()
-        }
-    }
 }

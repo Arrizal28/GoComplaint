@@ -21,6 +21,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,43 +54,18 @@ fun HomeScreen(
     navigateToRegister: () -> Unit,
     navigateToDetail: (Int) -> Unit
 ) {
-
-//    LaunchedEffect(Unit) {
-//        viewModel.getSession().collect { user ->
-//            if (user.token == "") {
-//                navigateToRegister()
-//            }
-//        }
-//    }
-
     HomeContent(
         modifier = modifier,
         listComplaints = viewModel.complaint,
-        search = { },
-        navigateToDetail = navigateToDetail
+        navigateToDetail = navigateToDetail,
     )
-
-//    val uiComplaintState by viewModel.uiComplaintState.collectAsState()
-
-//    when (uiComplaintState) {
-//        is UiState.Loading -> {
-//            Loading()
-//        }
-//        is UiState.Success -> {
-//            val complaintResponse = (uiComplaintState as UiState.Success<ComplaintResponse>).data
-//        }
-//        is UiState.Error -> {
-//            Error()
-//        }
-//    }
 }
 
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
     listComplaints: Flow<PagingData<ComplaintsItem>>,
-    search: () -> Unit,
-    navigateToDetail: (Int) -> Unit
+    navigateToDetail: (Int) -> Unit,
 ) {
     var query by remember { mutableStateOf("") }
 
@@ -101,68 +77,26 @@ fun HomeContent(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .height(84.dp)
+                .height(60.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
                 ),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.Center
         ) {
-            OutlinedTextField(
-                value = query,
-                onValueChange = { query = it },
-                shape = RoundedCornerShape(size = 10.dp),
-                modifier = modifier
-                    .weight(1f)
-                    .padding(16.dp),
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.plchldr_search),
-                        fontFamily = poppinsFontFamily,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp,
-                        color = Color.White
-                    )
-                },
-                trailingIcon = {
-                    val image = Icons.Outlined.Search
-
-                    val description = "Search"
-
-                    IconButton(onClick = { search() }) {
-                        Icon(imageVector = image, description)
-                    }
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedTrailingIconColor = Color.White,
-                    unfocusedTrailingIconColor = Color.White,
-                )
-            )
-            Image(
-                painter = painterResource(R.drawable.default_profile_icon_24),
-                contentDescription = "profile",
-                modifier = modifier
-                    .padding(top = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .size(56.dp)
-                    .clip(CircleShape)
+            Text(
+                text = stringResource(R.string.app_name),
+                fontFamily = poppinsFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp,
+                color = Color.White
             )
         }
         ComplaintList(
             modifier = modifier,
             listComplaints = listComplaints,
-            navigateToDetail = navigateToDetail
+            navigateToDetail = navigateToDetail,
         )
     }
 }
-
-//@Preview
-//@Composable
-//fun PreviewHomeScreen() {
-//    GoComplaintTheme {
-//        HomeScreen(navigateToRegister = { })
-//    }
-//}

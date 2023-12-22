@@ -33,7 +33,7 @@ class ViewModelFactory(
         } else if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
             return ProfileViewModel(userRepository, needHeaderRepository) as T
         } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
-            return DetailViewModel(userRepository, complaintRepository) as T
+            return DetailViewModel(userRepository, complaintRepository, needHeaderRepository) as T
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
             return SearchViewModel(userRepository, complaintRepository) as T
         } else if (modelClass.isAssignableFrom(AddViewModel::class.java)) {

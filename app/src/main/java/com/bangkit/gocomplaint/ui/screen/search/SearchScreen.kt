@@ -18,6 +18,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SearchBarDefaults.inputFieldColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -87,7 +89,7 @@ fun SearchContent(
                 .fillMaxWidth()
                 .height(84.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
                 ),
             verticalAlignment = Alignment.CenterVertically,
@@ -125,7 +127,7 @@ fun SearchBar(
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = null,
-                tint = Color.White
+                tint = Color.Black
             )
         },
         placeholder = {
@@ -135,7 +137,17 @@ fun SearchBar(
         modifier = modifier
             .padding(16.dp)
             .fillMaxWidth()
-            .heightIn(min = 48.dp)
+            .heightIn(min = 48.dp),
+        colors = SearchBarDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.tertiary,
+            inputFieldColors = inputFieldColors(
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                cursorColor = MaterialTheme.colorScheme.onPrimary,
+                focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
+            )
+        )
     ) {
     }
 }
@@ -151,11 +163,3 @@ fun HomeEmpty(
         Text(stringResource(R.string.search_not_found), color = MaterialTheme.colorScheme.onPrimary)
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun SearchContentPreview() {
-//    GoComplaintTheme {
-//        SearchContent(search = {})
-//    }
-//}

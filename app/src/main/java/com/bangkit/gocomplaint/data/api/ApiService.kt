@@ -1,5 +1,6 @@
 package com.bangkit.gocomplaint.data.api
 
+import com.bangkit.gocomplaint.data.model.AddCommentRequest
 import com.bangkit.gocomplaint.data.model.AddComplaintRequest
 import com.bangkit.gocomplaint.data.model.AddComplaintResponse
 import com.bangkit.gocomplaint.data.model.AuthResponse
@@ -11,6 +12,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -28,9 +30,6 @@ interface ApiService {
     suspend fun login(
         @Body loginRequest: LoginRequest
     ): Response<AuthResponse>
-
-//    @GET("api/main/complaints")
-//    suspend fun getComplaints(): ComplaintResponse
 
     @GET("api/main/complaints")
     suspend fun getComplaints(
@@ -64,6 +63,11 @@ interface ApiService {
 
     @POST("api/main/comments")
     suspend fun addComment(
-        @Body addComplaintRequest: AddComplaintRequest
+        @Body addCommentRequest: AddCommentRequest
+    ): AddComplaintResponse
+
+    @DELETE("api/main/complaints/{id}")
+    suspend fun deleteComplaint(
+        @Path("id") id: String
     ): AddComplaintResponse
 }

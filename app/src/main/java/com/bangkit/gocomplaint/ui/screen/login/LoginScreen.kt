@@ -69,7 +69,6 @@ fun LoginScreen(
 
     LaunchedEffect(Unit) {
         viewModel.getAccessToken()
-        Log.d("lalala", uiLoginState?.expiryTime.toString())
     }
 
     when (uiState) {
@@ -79,10 +78,6 @@ fun LoginScreen(
 
         is UiState.Success -> {
             if (uiLoginState?.token != "") {
-                Toast.makeText(
-                    LocalContext.current,
-                    stringResource(R.string.login_successfully), Toast.LENGTH_SHORT
-                ).show()
                 navigateToHome()
             }
         }
@@ -184,7 +179,7 @@ fun LoginScreenContent(
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = Color(0xff979797)
                 )
             },
             keyboardOptions = KeyboardOptions(
@@ -193,8 +188,8 @@ fun LoginScreenContent(
             ),
             colors = TextFieldDefaults.colors(
                 focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                focusedContainerColor = Color(0xffE3E3E3),
+                unfocusedContainerColor = Color(0xffE3E3E3),
                 disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
@@ -230,7 +225,7 @@ fun LoginScreenContent(
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = Color(0xff979797)
                 )
             },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -251,13 +246,13 @@ fun LoginScreenContent(
             },
             colors = TextFieldDefaults.colors(
                 focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                focusedContainerColor = Color(0xffE3E3E3),
+                unfocusedContainerColor = Color(0xffE3E3E3),
                 disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedTrailingIconColor = Color(0xff979797),
                 errorContainerColor = MaterialTheme.colorScheme.tertiary,
                 errorIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
@@ -310,15 +305,3 @@ fun LoginScreenContent(
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun LoginScreenPreview(
-//    navController: NavHostController = rememberNavController(),
-//) {
-//    GoComplaintTheme {
-//        LoginScreen(
-//            navigateToRegister = { navController.navigate(Screen.Register.route) }
-//        )
-//    }
-//}

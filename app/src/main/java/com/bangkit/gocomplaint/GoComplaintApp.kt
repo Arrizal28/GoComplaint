@@ -1,7 +1,5 @@
 package com.bangkit.gocomplaint
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -23,9 +21,9 @@ import com.bangkit.gocomplaint.ui.navigation.Screen
 import com.bangkit.gocomplaint.ui.screen.add.AddScreen
 import com.bangkit.gocomplaint.ui.screen.detail.DetailScreen
 import com.bangkit.gocomplaint.ui.screen.home.HomeScreen
-import com.bangkit.gocomplaint.ui.screen.profile.ProfileScreen
 import com.bangkit.gocomplaint.ui.screen.home.HomeViewModel
 import com.bangkit.gocomplaint.ui.screen.login.LoginScreen
+import com.bangkit.gocomplaint.ui.screen.profile.ProfileScreen
 import com.bangkit.gocomplaint.ui.screen.register.RegisterScreen
 import com.bangkit.gocomplaint.ui.screen.search.SearchScreen
 import com.bangkit.gocomplaint.ui.theme.GoComplaintTheme
@@ -40,20 +38,7 @@ fun GoComplaintApp(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-//    var startRoute by remember { mutableStateOf("") }
-//    val updatedStartRoute = rememberUpdatedState(startRoute)
     val startDestination = viewModel.startDestination.collectAsState().value
-
-
-//    LaunchedEffect(Unit) {
-//        viewModel.getSession().collect { user ->
-//            startRoute = if (user.token == "") {
-//                Screen.Login.route
-//            } else {
-//                Screen.Home.route
-//            }
-//        }
-//    }
 
     Scaffold(
         bottomBar = {
@@ -90,8 +75,8 @@ fun GoComplaintApp(
                         navigateBack = {
                             navController.navigateUp()
                         },
-                        navigateToProfile = {
-                            navController.navigate(Screen.Profile.route)
+                        navigate = {
+                            navController.navigate(Screen.Home.route)
                         }
                     )
                 }
@@ -99,6 +84,9 @@ fun GoComplaintApp(
                     ProfileScreen(
                         navigateToLogin = {
                             navController.navigate(Screen.Login.route)
+                        },
+                        navigateToDetail = { complaintId ->
+                            navController.navigate(Screen.DetailComplaint.createRoute(complaintId))
                         }
                     )
                 }

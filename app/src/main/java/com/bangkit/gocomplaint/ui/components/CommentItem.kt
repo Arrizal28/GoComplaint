@@ -16,7 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,6 +66,7 @@ fun CommentItem(
                 modifier = modifier
                     .padding(start = 16.dp, top = 16.dp)
                     .size(34.dp)
+                    .shadow(4.dp, CircleShape, clip = false)
                     .clip(CircleShape)
             )
             Column(
@@ -80,16 +83,16 @@ fun CommentItem(
                     Text(
                         text = item.username,
                         fontFamily = poppinsFontFamily,
-                        fontWeight = FontWeight.Light,
+                        fontWeight = FontWeight.Bold,
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                     Text(
-                        text = item.createdAt.calculateTimeDifference(),
+                        text = item.createdAt.calculateTimeDifference(LocalContext.current),
                         fontFamily = poppinsFontFamily,
                         fontWeight = FontWeight.Light,
                         fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = Color.Gray
                     )
                 }
                 Text(
@@ -101,19 +104,5 @@ fun CommentItem(
                 )
             }
         }
-        Divider(
-            color = Color.Gray,
-            thickness = 1.dp,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
     }
 }
-
-//@Preview
-//@Composable
-//fun PreviewCommentItem() {
-//    GoComplaintTheme {
-//        CommentItem()
-//    }
-//}

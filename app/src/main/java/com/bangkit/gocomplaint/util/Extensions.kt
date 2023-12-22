@@ -12,8 +12,11 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.FileProvider
 import com.bangkit.gocomplaint.BuildConfig
+import com.bangkit.gocomplaint.R
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -22,7 +25,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
+
 
 private const val MAXIMAL_SIZE = 1000000
 private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
@@ -55,26 +60,40 @@ private fun getImageUriForPreQ(context: Context): Uri {
     )
 }
 
-fun String.calculateTimeDifference(): String {
+fun String.calculateTimeDifference(context: Context): String {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    dateFormat.timeZone = TimeZone.getTimeZone("UTC")
     val date = dateFormat.parse(this)
 
     val currentTime = Calendar.getInstance().time
     val differenceInMillis = currentTime.time - (date?.time ?: 0)
     val differenceInHours = TimeUnit.MILLISECONDS.toHours(differenceInMillis)
+    val differenceInMinutes = TimeUnit.MILLISECONDS.toMinutes(differenceInMillis)
     val differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMillis)
+    val localDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
 
     return when {
         differenceInDays >= 7 -> {
             val formattedDate = date?.let {
-                SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(
-                    it
-                )
+                localDateFormat.format(it)
             }
             "$formattedDate"
         }
-        differenceInDays > 1 -> "$differenceInDays day"
-        else -> "$differenceInHours hours"
+
+        differenceInDays > 0 -> {
+            val dayString = context.getString(R.string.day)
+            "$differenceInDays $dayString"
+        }
+
+        differenceInHours > 0 -> {
+            val hourString = context.getString(R.string.hour)
+            "$differenceInHours $hourString"
+        }
+
+        else -> {
+            val minuteString = context.getString(R.string.minute)
+            "$differenceInMinutes $minuteString"
+        }
     }
 }
 

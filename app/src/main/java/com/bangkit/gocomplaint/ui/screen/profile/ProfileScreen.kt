@@ -1,5 +1,6 @@
 package com.bangkit.gocomplaint.ui.screen.profile
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,9 +35,9 @@ import com.bangkit.gocomplaint.R
 import com.bangkit.gocomplaint.ViewModelFactory
 import com.bangkit.gocomplaint.data.model.ComplaintResponse
 import com.bangkit.gocomplaint.ui.common.UiState
-import com.bangkit.gocomplaint.ui.components.ProfileList
 import com.bangkit.gocomplaint.ui.components.LogoutItem
 import com.bangkit.gocomplaint.ui.components.ProfileItem
+import com.bangkit.gocomplaint.ui.components.ProfileList
 import com.bangkit.gocomplaint.ui.screen.Error
 import com.bangkit.gocomplaint.ui.screen.Loading
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
@@ -46,6 +49,7 @@ fun ProfileScreen(
         factory = ViewModelFactory.getInstance(LocalContext.current)
     ),
     navigateToLogin: () -> Unit,
+    navigateToDetail: (Int) -> Unit,
 ) {
     var id by remember { mutableStateOf("") }
 
@@ -70,12 +74,37 @@ fun ProfileScreen(
                     onClick = {
                         viewModel.logOut()
                         navigateToLogin()
+                    },
+                    navigateToDetail = navigateToDetail,
+                    deleteClick = {
+                        viewModel.deleteComplaint(it)
                     }
                 )
             }
 
             is UiState.Error -> {
-                Error()
+                Toast.makeText(
+                    LocalContext.current,
+                    stringResource(R.string.err_load), Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    viewModel.uiDeleteState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+        when (uiState) {
+            is UiState.Loading -> {
+            }
+
+            is UiState.Success -> {
+                viewModel.getProfile(id)
+            }
+
+            is UiState.Error -> {
+                Toast.makeText(
+                    LocalContext.current,
+                    stringResource(R.string.err_delete), Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -85,8 +114,13 @@ fun ProfileScreen(
 fun ProfileContent(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    item: ComplaintResponse
+    item: ComplaintResponse,
+    navigateToDetail: (Int) -> Unit,
+    deleteClick: (complaintId: String) -> Unit
 ) {
+
+    val openDialog = remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -98,7 +132,7 @@ fun ProfileContent(
                     .fillMaxWidth()
                     .height(60.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
                     ),
                 verticalAlignment = Alignment.CenterVertically,
@@ -115,18 +149,47 @@ fun ProfileContent(
         }
         ProfileItem(username = item.complaints[0].username!!, modifier = modifier.padding(top = 8.dp, bottom = 8.dp))
         LogoutItem(modifier = modifier.padding(bottom = 8.dp),
-            onClick = {})
+            onClick = {
+                openDialog.value = true
+            })
         ProfileList(
             modifier = modifier,
-            item = item
+            item = item,
+            navigateToDetail = navigateToDetail,
+            deleteClick = {
+                deleteClick(it)
+            }
         )
+        if (openDialog.value) {
+            AlertDialog(
+                onDismissRequest = {
+                    openDialog.value = false
+                },
+                title = {
+                    Text(text = stringResource(R.string.title_alert_logout), color = MaterialTheme.colorScheme.onPrimary)
+                },
+                text = {
+                    Text(text = stringResource(R.string.text_alert_logout), color = MaterialTheme.colorScheme.onPrimary)
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            onClick()
+                            openDialog.value = false
+                        }) {
+                        Text(text = stringResource(R.string.logout), color = Color.White)
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            openDialog.value = false
+                        }) {
+                        Text(text = stringResource(R.string.cancel), color = Color.White)
+                    }
+                },
+                containerColor = MaterialTheme.colorScheme.tertiary,
+            )
+        }
     }
 }
-
-//@Preview
-//@Composable
-//fun ProfileScreenPreview() {
-//    GoComplaintTheme {
-//        ProfileContent()
-//    }
-//}

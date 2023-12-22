@@ -2,16 +2,13 @@ package com.bangkit.gocomplaint.ui.screen.add
 
 import android.net.Uri
 import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -58,7 +57,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bangkit.gocomplaint.R
 import com.bangkit.gocomplaint.ViewModelFactory
-import com.bangkit.gocomplaint.data.model.AddComplaintRequest
 import com.bangkit.gocomplaint.ui.common.UiState
 import com.bangkit.gocomplaint.ui.components.BasicButton
 import com.bangkit.gocomplaint.ui.screen.Error
@@ -67,31 +65,20 @@ import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 import com.bangkit.gocomplaint.util.reduceFileImage
 import com.bangkit.gocomplaint.util.uriToFile
 
-//@Composable
-//fun AddScreen(
-//    modifier: Modifier = Modifier,
-//) {
-//    Box(
-//        modifier = modifier.fillMaxSize(),
-//        contentAlignment = Alignment.Center,
-//    ) {
-//        Text(stringResource(R.string.search_not_found), color = MaterialTheme.colorScheme.onPrimary)
-//    }
-//}
-
 @Composable
 fun AddScreen(
     modifier: Modifier = Modifier,
     viewModel: AddViewModel = viewModel(
         factory = ViewModelFactory.getInstance(LocalContext.current)
     ),
-    navigateToProfile: () -> Unit,
+    navigate: () -> Unit,
     navigateBack: () -> Unit,
 ) {
-    viewModel.getAccessToken()
+    LaunchedEffect(Unit) {
+        viewModel.getAccessToken()
+    }
 
     val uiState by viewModel.uiState.collectAsState()
-    val uiUserState by viewModel.uiUserState.collectAsState()
 
     when (uiState) {
         is UiState.Loading -> {
@@ -99,20 +86,13 @@ fun AddScreen(
         }
 
         is UiState.Success -> {
-            if (uiUserState?.token != "") {
-                Toast.makeText(
-                    LocalContext.current,
-                    stringResource(R.string.success_add_complaint), Toast.LENGTH_SHORT
-                ).show()
-                navigateToProfile()
-            }
+            navigate()
         }
 
         is UiState.Error -> {
             Error()
         }
     }
-
     AddContent(onBackClick = navigateBack)
 }
 
@@ -154,12 +134,6 @@ fun AddContent(
         }
     )
 
-//    val addComplaintInfo = AddComplaintRequest(
-//        complaint = text,
-//        category = selectedCategory,
-//        location = address
-//    )
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -170,7 +144,7 @@ fun AddContent(
                 .fillMaxWidth()
                 .height(60.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
                 ),
             verticalAlignment = Alignment.CenterVertically,
@@ -178,7 +152,7 @@ fun AddContent(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Cancel,
-                contentDescription = stringResource(R.string.publish),
+                contentDescription = stringResource(R.string.cancel),
                 modifier = modifier
                     .padding(start = 16.dp)
                     .size(24.dp)
@@ -228,6 +202,7 @@ fun AddContent(
                 modifier = modifier
                     .padding(start = 16.dp, top = 16.dp)
                     .size(48.dp)
+                    .shadow(4.dp, CircleShape, clip = false)
                     .clip(CircleShape)
             )
             Column {
@@ -254,6 +229,7 @@ fun AddContent(
                     },
                     colors = TextFieldDefaults.colors(
                         focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
                         focusedContainerColor = MaterialTheme.colorScheme.tertiary,
                         unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
                         focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
@@ -287,6 +263,7 @@ fun AddContent(
                     },
                     colors = TextFieldDefaults.colors(
                         focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
                         focusedContainerColor = MaterialTheme.colorScheme.tertiary,
                         unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
                         focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
@@ -351,6 +328,7 @@ fun AddContent(
                     thickness = 1.dp,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(bottom = 16.dp)
                 )
                 AsyncImage(
                     modifier = Modifier
@@ -366,7 +344,7 @@ fun AddContent(
         Button(modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(0.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -377,21 +355,14 @@ fun AddContent(
                 )
             }) {
             Text(
-                text = "Pick a Photo",
+                text = stringResource(R.string.pick_a_photo),
                 style = TextStyle(
                     fontSize = 18.sp
-                )
+                ),
+                color = Color.White
             )
         }
     }
 }
 
 data class Category(val displayText: Int, val apiValue: String)
-
-//@Preview(showBackground = true)
-//@Composable
-//fun AddScreenPreview() {
-//    GoComplaintTheme {
-//        AddContent()
-//    }
-//}

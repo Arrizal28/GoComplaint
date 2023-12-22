@@ -8,6 +8,7 @@ import com.bangkit.gocomplaint.data.pref.UserModel
 import com.bangkit.gocomplaint.data.repository.NeedHeaderRepository
 import com.bangkit.gocomplaint.data.repository.UserRepository
 import com.bangkit.gocomplaint.ui.common.UiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -32,8 +33,6 @@ class AddViewModel(private val repository: UserRepository, private val needHeade
         }
     }
 
-//    fun getSession(): Flow<UserModel> = repository.getSession()
-
     fun getAccessToken() {
         viewModelScope.launch {
             repository.getSession().collect { userEntity ->
@@ -41,5 +40,4 @@ class AddViewModel(private val repository: UserRepository, private val needHeade
             }
         }
     }
-
 }

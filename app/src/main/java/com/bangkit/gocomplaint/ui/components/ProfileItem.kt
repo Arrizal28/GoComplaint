@@ -21,9 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bangkit.gocomplaint.R
@@ -52,11 +54,13 @@ fun ProfileItem(
                 contentDescription = "profile",
                 modifier = modifier
                     .size(34.dp)
+                    .shadow(4.dp, CircleShape, clip = false)
                     .clip(CircleShape)
             )
             Text(
                 text = username,
                 modifier = modifier.padding(start = 16.dp),
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimary
             )
         }
@@ -87,22 +91,14 @@ fun LogoutItem(
                 .background(color = MaterialTheme.colorScheme.tertiary)
                 .padding(16.dp),
         ) {
+            Text(
+                text = stringResource(R.string.logout),
+                color = Color(0xFFFF0060)
+            )
             Icon(
                 imageVector = Icons.Default.Logout,
                 contentDescription = stringResource(R.string.logout),
-                modifier = modifier.weight(1f),
-                tint = MaterialTheme.colorScheme.onPrimary
-            )
-            Text(
-                text = stringResource(R.string.logout),
-                modifier = modifier.weight(3f),
-                color = MaterialTheme.colorScheme.onPrimary
-            )
-            Icon(
-                imageVector = Icons.Default.ArrowForwardIos,
-                contentDescription = stringResource(R.string.logout),
-                modifier = modifier.weight(1f),
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = Color(0xFFFF0060)
             )
         }
         Divider(
