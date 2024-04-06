@@ -1,5 +1,6 @@
 package com.bangkit.gocomplaint.ui.screen.register
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,6 +20,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -27,6 +32,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,7 +58,9 @@ import com.bangkit.gocomplaint.ui.components.BasicButton
 import com.bangkit.gocomplaint.ui.screen.Error
 import com.bangkit.gocomplaint.ui.screen.Loading
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
+import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
@@ -66,6 +74,17 @@ fun RegisterScreen(
 
     val uiState by viewModel.uiState.collectAsState()
     val uiRegisState by viewModel.uiRegisState.collectAsState()
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    fun showSnackbar(message: String) {
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
 
     when (uiState) {
         is UiState.Loading -> {
@@ -84,24 +103,30 @@ fun RegisterScreen(
         }
 
         is UiState.Error -> {
-            Error()
+            showSnackbar((uiState as UiState.Error).errorMessage)
         }
     }
 
-    RegisterScreenContent(
-        modifier = modifier,
-        navigateToLogin = navigateToLogin,
-        onClick = {
-            viewModel.register(
-                RegisterRequest(
-                    username = it.username,
-                    email = it.email,
-                    password = it.password,
-                    confPassword = it.confPassword
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
+    ) { contentPadding ->
+        RegisterScreenContent(
+            modifier = modifier,
+            navigateToLogin = navigateToLogin,
+            onClick = {
+                viewModel.register(
+                    RegisterRequest(
+                        username = it.username,
+                        email = it.email,
+                        password = it.password,
+                        confPassword = it.confPassword
+                    )
                 )
-            )
-        }
-    )
+            }
+        )
+    }
 }
 
 @Composable
@@ -389,7 +414,6 @@ fun RegisterScreenContent(
             horizontalArrangement = Arrangement.Center,
         ) {
             Text(
-                modifier = modifier.clickable { navigateToLogin() },
                 text = stringResource(R.string.regis_to_login),
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.ExtraLight,
@@ -397,6 +421,7 @@ fun RegisterScreenContent(
                 color = MaterialTheme.colorScheme.onPrimary
             )
             Text(
+                modifier = modifier.clickable { navigateToLogin() },
                 text = stringResource(R.string.login),
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.ExtraLight,

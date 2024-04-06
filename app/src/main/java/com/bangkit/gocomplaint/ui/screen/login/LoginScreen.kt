@@ -1,5 +1,6 @@
 package com.bangkit.gocomplaint.ui.screen.login
 
+import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -20,6 +21,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -29,6 +34,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,7 +60,9 @@ import com.bangkit.gocomplaint.ui.components.BasicButton
 import com.bangkit.gocomplaint.ui.screen.Error
 import com.bangkit.gocomplaint.ui.screen.Loading
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
+import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
@@ -66,6 +74,17 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val uiLoginState by viewModel.uiLoginState.collectAsState()
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    fun showSnackbar(message: String) {
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getAccessToken()
@@ -83,21 +102,27 @@ fun LoginScreen(
         }
 
         is UiState.Error -> {
-            Error()
+            showSnackbar((uiState as UiState.Error).errorMessage)
         }
     }
 
-    LoginScreenContent(
-        navigateToRegister = { navigateToRegister() },
-        onClick = {
-            viewModel.login(
-                LoginRequest(
-                    email = it.email,
-                    password = it.password,
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
+    ) { contentPadding ->
+        LoginScreenContent(
+            navigateToRegister = { navigateToRegister() },
+            onClick = {
+                viewModel.login(
+                    LoginRequest(
+                        email = it.email,
+                        password = it.password,
+                    )
                 )
-            )
-        }
-    )
+            }
+        )
+    }
 }
 
 @Composable
