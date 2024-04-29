@@ -40,6 +40,7 @@ import com.bangkit.gocomplaint.data.model.ComplaintResponse
 import com.bangkit.gocomplaint.ui.common.UiState
 import com.bangkit.gocomplaint.ui.components.SearchResultItem
 import com.bangkit.gocomplaint.ui.screen.Error
+import com.bangkit.gocomplaint.ui.screen.ErrorScreen
 
 @Composable
 fun SearchScreen(
@@ -62,7 +63,6 @@ fun SearchScreen(
                 Log.d("lala", "lala")
             }
             is UiState.Error -> {
-                Error()
             }
         }
     }

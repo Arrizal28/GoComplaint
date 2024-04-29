@@ -39,6 +39,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.bangkit.gocomplaint.R
 import com.bangkit.gocomplaint.data.model.ComplaintsItem
+import com.bangkit.gocomplaint.ui.screen.ErrorScreen
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 import com.bangkit.gocomplaint.util.calculateTimeDifference
 import kotlinx.coroutines.flow.Flow
@@ -91,6 +92,9 @@ fun ComplaintList(
                 }
 
                 loadState.append is LoadState.Error -> {
+                    item {
+                        ErrorScreen(retryAction = { refresh() })
+                    }
                 }
             }
         }

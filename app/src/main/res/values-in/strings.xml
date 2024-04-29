@@ -61,4 +61,6 @@
     <string name="err_load">Gagal memuat data, coba lagi nanti</string>
     <string name="err_action">Tindakan gagal, coba lagi nanti</string>
     <string name="pick_a_photo">Pilih Foto</string>
+    <string name="loading_failed">Gagal untuk memuat</string>
+    <string name="retry">Coba Lagi</string>
 </resources>

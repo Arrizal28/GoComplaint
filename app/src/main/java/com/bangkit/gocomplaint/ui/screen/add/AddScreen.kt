@@ -1,5 +1,6 @@
 package com.bangkit.gocomplaint.ui.screen.add
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -30,6 +31,10 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -39,6 +44,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,14 +63,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bangkit.gocomplaint.R
 import com.bangkit.gocomplaint.ViewModelFactory
+import com.bangkit.gocomplaint.data.model.LoginRequest
 import com.bangkit.gocomplaint.ui.common.UiState
 import com.bangkit.gocomplaint.ui.components.BasicButton
 import com.bangkit.gocomplaint.ui.screen.Error
 import com.bangkit.gocomplaint.ui.screen.Loading
+import com.bangkit.gocomplaint.ui.screen.login.LoginScreenContent
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 import com.bangkit.gocomplaint.util.reduceFileImage
 import com.bangkit.gocomplaint.util.uriToFile
+import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddScreen(
     modifier: Modifier = Modifier,
@@ -76,6 +86,17 @@ fun AddScreen(
 ) {
     LaunchedEffect(Unit) {
         viewModel.getAccessToken()
+    }
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    fun showSnackbar(message: String) {
+        scope.launch {
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+        }
     }
 
     val uiState by viewModel.uiState.collectAsState()
@@ -93,7 +114,14 @@ fun AddScreen(
             Error()
         }
     }
-    AddContent(onBackClick = navigateBack)
+
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
+    ) { contentPadding ->
+        AddContent(onBackClick = navigateBack)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

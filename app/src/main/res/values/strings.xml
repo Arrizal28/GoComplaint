@@ -60,4 +60,6 @@
     <string name="err_load">Failed to load data, try again later</string>
     <string name="err_action">Failed action, try again later</string>
     <string name="pick_a_photo">Pick a Photo</string>
+    <string name="loading_failed">Failed to load</string>
+    <string name="retry">Retry</string>
 </resources>
