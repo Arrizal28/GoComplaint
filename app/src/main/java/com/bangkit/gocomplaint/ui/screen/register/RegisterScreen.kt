@@ -1,7 +1,6 @@
 package com.bangkit.gocomplaint.ui.screen.register
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,8 +10,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -21,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -55,7 +57,6 @@ import com.bangkit.gocomplaint.ViewModelFactory
 import com.bangkit.gocomplaint.data.model.RegisterRequest
 import com.bangkit.gocomplaint.ui.common.UiState
 import com.bangkit.gocomplaint.ui.components.BasicButton
-import com.bangkit.gocomplaint.ui.screen.Error
 import com.bangkit.gocomplaint.ui.screen.Loading
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 import kotlinx.coroutines.launch
@@ -77,6 +78,8 @@ fun RegisterScreen(
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    var snackbarSuccess by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     fun showSnackbar(message: String) {
         scope.launch {
             snackbarHostState.showSnackbar(
@@ -93,12 +96,9 @@ fun RegisterScreen(
 
         is UiState.Success -> {
             if (uiRegisState?.token != "") {
-                Toast.makeText(
-                    LocalContext.current,
-                    R.string.registration_successful,
-                    Toast.LENGTH_SHORT
-                ).show()
+                snackbarSuccess = true
                 navigateToHome()
+                showSnackbar(context.getString(R.string.login_successfully))
             }
         }
 
@@ -109,7 +109,12 @@ fun RegisterScreen(
 
     Scaffold(
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(
+                    snackbarData = it,
+                    containerColor = if(snackbarSuccess) Color.Green else Color.Red
+                )
+            }
         },
     ) { contentPadding ->
         RegisterScreenContent(
@@ -171,6 +176,8 @@ fun RegisterScreenContent(
         confPassword = confPassword
     )
 
+    val scrollState = rememberScrollState()
+
     Box(modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.background_page),
@@ -182,6 +189,7 @@ fun RegisterScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -261,7 +269,7 @@ fun RegisterScreenContent(
                 disabledContainerColor = MaterialTheme.colorScheme.tertiary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
-                errorContainerColor = MaterialTheme.colorScheme.tertiary,
+                errorContainerColor = Color(0xffE3E3E3),
                 errorIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
             ),
@@ -322,7 +330,7 @@ fun RegisterScreenContent(
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedTrailingIconColor = Color(0xff979797),
-                errorContainerColor = MaterialTheme.colorScheme.tertiary,
+                errorContainerColor = Color(0xffE3E3E3),
                 errorIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
             ),
@@ -347,7 +355,7 @@ fun RegisterScreenContent(
             shape = RoundedCornerShape(size = 10.dp),
             placeholder = {
                 Text(
-                    text = stringResource(R.string.plchldr_pw),
+                    text = stringResource(R.string.plchldr_conf_pw),
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
@@ -379,7 +387,7 @@ fun RegisterScreenContent(
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedTrailingIconColor = Color(0xff979797),
-                errorContainerColor = MaterialTheme.colorScheme.tertiary,
+                errorContainerColor = Color(0xffE3E3E3),
                 errorIndicatorColor = MaterialTheme.colorScheme.tertiary,
                 unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
             ),

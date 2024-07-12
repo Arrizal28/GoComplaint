@@ -6,6 +6,7 @@
     <string name="subhead_regis">Please enter your information below to create a new account to use the app.</string>
     <string name="plchldr_email">Email</string>
     <string name="plchldr_pw">Password</string>
+    <string name="plchldr_conf_pw">Confirm Password</string>
     <string name="plchldr_search">Search for the same problem</string>
     <string name="plchldr_add">What’s happening? (max: 255 char)</string>
     <string name="full_name">Full Name</string>
@@ -60,6 +61,7 @@
     <string name="err_load">Failed to load data, try again later</string>
     <string name="err_action">Failed action, try again later</string>
     <string name="pick_a_photo">Pick a Photo</string>
-    <string name="loading_failed">Failed to load</string>
+    <string name="loading_failed">Couldn\'t connect. Try again later.</string>
     <string name="retry">Retry</string>
+    <string name="unknown_error">Unknown error occurred</string>
 </resources>

@@ -21,7 +21,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,7 +37,7 @@ import com.bangkit.gocomplaint.ui.common.UiState
 import com.bangkit.gocomplaint.ui.components.LogoutItem
 import com.bangkit.gocomplaint.ui.components.ProfileItem
 import com.bangkit.gocomplaint.ui.components.ProfileList
-import com.bangkit.gocomplaint.ui.screen.Error
+import com.bangkit.gocomplaint.ui.screen.ErrorScreen
 import com.bangkit.gocomplaint.ui.screen.Loading
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 
@@ -51,15 +50,10 @@ fun ProfileScreen(
     navigateToLogin: () -> Unit,
     navigateToDetail: (Int) -> Unit,
 ) {
-    var id by remember { mutableStateOf("") }
+    val id by viewModel.stateId.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getSession().collect { user ->
-            if (user.userId != 0) {
-                id = user.userId.toString()
-                viewModel.getProfile(id)
-            }
-        }
+        viewModel.getProfile(id)
     }
 
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -70,6 +64,7 @@ fun ProfileScreen(
 
             is UiState.Success -> {
                 ProfileContent(
+                    emptyList = uiState.data.complaints.isEmpty(),
                     item = uiState.data,
                     onClick = {
                         viewModel.logOut()
@@ -78,15 +73,12 @@ fun ProfileScreen(
                     navigateToDetail = navigateToDetail,
                     deleteClick = {
                         viewModel.deleteComplaint(it)
-                    }
+                    },
                 )
             }
 
             is UiState.Error -> {
-                Toast.makeText(
-                    LocalContext.current,
-                    stringResource(R.string.err_load), Toast.LENGTH_SHORT
-                ).show()
+                ErrorScreen(retryAction = { { /*TODO*/ } }, modifier = modifier.fillMaxSize())
             }
         }
     }
@@ -116,6 +108,7 @@ fun ProfileContent(
     onClick: () -> Unit,
     item: ComplaintResponse,
     navigateToDetail: (Int) -> Unit,
+    emptyList: Boolean = false,
     deleteClick: (complaintId: String) -> Unit
 ) {
 
@@ -147,29 +140,45 @@ fun ProfileContent(
                 )
             }
         }
-        ProfileItem(username = item.complaints[0].username!!, modifier = modifier.padding(top = 8.dp, bottom = 8.dp))
+        if (item.complaints.isNotEmpty()) {
+            ProfileItem(
+                username = item.complaints[0].username!!,
+                modifier = modifier.padding(top = 8.dp, bottom = 8.dp)
+            )
+        }
         LogoutItem(modifier = modifier.padding(bottom = 8.dp),
             onClick = {
                 openDialog.value = true
             })
-        ProfileList(
-            modifier = modifier,
-            item = item,
-            navigateToDetail = navigateToDetail,
-            deleteClick = {
-                deleteClick(it)
-            }
-        )
+
+        if(!emptyList) {
+            ProfileList(
+                modifier = modifier,
+                item = item,
+                navigateToDetail = navigateToDetail,
+                deleteClick = {
+                    deleteClick(it)
+                }
+            )
+        }
+
+
         if (openDialog.value) {
             AlertDialog(
                 onDismissRequest = {
                     openDialog.value = false
                 },
                 title = {
-                    Text(text = stringResource(R.string.title_alert_logout), color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        text = stringResource(R.string.title_alert_logout),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 },
                 text = {
-                    Text(text = stringResource(R.string.text_alert_logout), color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        text = stringResource(R.string.text_alert_logout),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 },
                 confirmButton = {
                     Button(

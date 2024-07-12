@@ -2,7 +2,6 @@ package com.bangkit.gocomplaint.ui.screen.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bangkit.gocomplaint.data.model.AddComplaintRequest
 import com.bangkit.gocomplaint.data.model.AddComplaintResponse
 import com.bangkit.gocomplaint.data.pref.UserModel
 import com.bangkit.gocomplaint.data.repository.NeedHeaderRepository
@@ -23,21 +22,32 @@ class AddViewModel(private val repository: UserRepository, private val needHeade
     private val _uiUserState = MutableStateFlow<UserModel?>(null)
     val uiUserState: StateFlow<UserModel?> get() = _uiUserState
 
+    init {
+        getAccessToken()
+        getSession()
+    }
+
     fun addComplaint(complaint: String, category: String, location: String, file: File) {
         _uiState.value = UiState.Loading
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             needHeaderRepository.addComplaint(complaint, category, location, file)
                 .collect { data ->
-                    _uiState.value = UiState.Success(data as AddComplaintResponse)
+                    _uiState.value = UiState.Success(data)
                 }
         }
     }
 
     fun getAccessToken() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.getSession().collect { userEntity ->
                 _uiUserState.value = userEntity
             }
+        }
+    }
+
+    fun getSession() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getSession()
         }
     }
 }

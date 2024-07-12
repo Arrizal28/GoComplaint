@@ -48,7 +48,6 @@ import com.bangkit.gocomplaint.data.model.DetailResponse
 import com.bangkit.gocomplaint.ui.common.UiState
 import com.bangkit.gocomplaint.ui.components.CommentList
 import com.bangkit.gocomplaint.ui.components.DetailComplaintItem
-import com.bangkit.gocomplaint.ui.screen.Error
 import com.bangkit.gocomplaint.ui.screen.Loading
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 

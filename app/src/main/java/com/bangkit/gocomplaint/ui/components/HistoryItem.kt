@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,9 +48,8 @@ fun ProfileList(
     navigateToDetail: (Int) -> Unit,
     deleteClick: (complaintId: String) -> Unit,
 ) {
-
     LazyColumn {
-        items(count = item.complaints.size, itemContent = {index ->
+        items(count = item.complaints.size, itemContent = { index ->
             ProfileItem(
                 item = item.complaints[index],
                 modifier = Modifier.clickable {
@@ -60,7 +58,7 @@ fun ProfileList(
                     )
                 },
                 complaintId = item.complaints[index].id!!.toString(),
-                deleteClick = { deleteClick(it)}
+                deleteClick = { deleteClick(it) }
             )
         })
     }
@@ -104,12 +102,17 @@ fun ProfileItem(
                 .padding(16.dp)
         ) {
             if (item.file != null) {
-                AsyncImage(model = item.file, contentDescription = "image", contentScale = ContentScale.Crop ,modifier = modifier
-                    .size(54.dp)
-                    .weight(1f)
-                    .padding(end = 8.dp)
-                    .shadow(8.dp, RoundedCornerShape(8.dp), clip = false)
-                    .clip(RoundedCornerShape(8.dp)))
+                AsyncImage(
+                    model = item.file,
+                    contentDescription = "image",
+                    contentScale = ContentScale.Crop,
+                    modifier = modifier
+                        .size(54.dp)
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                        .shadow(8.dp, RoundedCornerShape(8.dp), clip = false)
+                        .clip(RoundedCornerShape(8.dp))
+                )
             }
             Column(
                 modifier = modifier
@@ -167,10 +170,16 @@ fun ProfileItem(
                     deleteDialog.value = false
                 },
                 title = {
-                    Text(text = stringResource(R.string.delete_complaint), color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        text = stringResource(R.string.delete_complaint),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 },
                 text = {
-                    Text(text = stringResource(R.string.text_alert_delete), color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        text = stringResource(R.string.text_alert_delete),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 },
                 confirmButton = {
                     Button(

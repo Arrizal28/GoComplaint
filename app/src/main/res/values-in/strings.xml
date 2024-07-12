@@ -7,6 +7,7 @@
     <string name="subhead_regis">Silakan masukkan informasi Anda di bawah ini untuk membuat akun baru untuk menggunakan aplikasi.</string>
     <string name="plchldr_email">Email</string>
     <string name="plchldr_pw">Kata sandi</string>
+    <string name="plchldr_conf_pw">konfirmasi kata sandi</string>
     <string name="plchldr_search">Cari untuk masalah yang sama</string>
     <string name="plchldr_add">Apa yang terjadi? (maks: 255 karakter)</string>
     <string name="full_name">Nama lengkap</string>
@@ -61,6 +62,7 @@
     <string name="err_load">Gagal memuat data, coba lagi nanti</string>
     <string name="err_action">Tindakan gagal, coba lagi nanti</string>
     <string name="pick_a_photo">Pilih Foto</string>
-    <string name="loading_failed">Gagal untuk memuat</string>
+    <string name="loading_failed">Tidak dapat terhubung. Coba lagi nanti.</string>
     <string name="retry">Coba Lagi</string>
+    <string name="unknown_error">Terjadi kesalahan yang tidak diketahui</string>
 </resources>

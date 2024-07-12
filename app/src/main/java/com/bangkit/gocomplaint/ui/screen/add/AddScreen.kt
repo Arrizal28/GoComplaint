@@ -32,6 +32,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -39,7 +40,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,12 +63,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bangkit.gocomplaint.R
 import com.bangkit.gocomplaint.ViewModelFactory
-import com.bangkit.gocomplaint.data.model.LoginRequest
 import com.bangkit.gocomplaint.ui.common.UiState
 import com.bangkit.gocomplaint.ui.components.BasicButton
 import com.bangkit.gocomplaint.ui.screen.Error
 import com.bangkit.gocomplaint.ui.screen.Loading
-import com.bangkit.gocomplaint.ui.screen.login.LoginScreenContent
 import com.bangkit.gocomplaint.ui.theme.poppinsFontFamily
 import com.bangkit.gocomplaint.util.reduceFileImage
 import com.bangkit.gocomplaint.util.uriToFile
@@ -84,10 +82,10 @@ fun AddScreen(
     navigate: () -> Unit,
     navigateBack: () -> Unit,
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.getAccessToken()
-    }
-
+//    LaunchedEffect(Unit) {
+//        viewModel.getAccessToken()
+//    }
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     fun showSnackbar(message: String) {
@@ -108,6 +106,7 @@ fun AddScreen(
 
         is UiState.Success -> {
             navigate()
+            showSnackbar(context.getString(R.string.success_add_complaint))
         }
 
         is UiState.Error -> {
@@ -117,7 +116,12 @@ fun AddScreen(
 
     Scaffold(
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+            SnackbarHost(hostState = snackbarHostState) {
+                Snackbar(
+                    snackbarData = it,
+                    containerColor = Color.Green
+                )
+            }
         },
     ) { contentPadding ->
         AddContent(onBackClick = navigateBack)
@@ -209,9 +213,10 @@ fun AddContent(
                 color = MaterialTheme.colorScheme.primary,
                 containerColor = Color.White,
                 modifier = modifier
-                    .padding(16.dp)
-                    .height(28.dp)
-                    .width(80.dp),
+                    .padding(12.dp)
+                    .height(32.dp)
+                    .width(80.dp)
+                    .align(Alignment.CenterVertically),
                 enabled = true
             )
         }
