@@ -63,6 +63,9 @@ fun SearchScreen(
                 Log.d("lala", "lala")
             }
             is UiState.Error -> {
+                ErrorScreen(
+                    retryAction = { }
+                )
             }
         }
     }

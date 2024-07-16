@@ -29,6 +29,7 @@ class ComplaintRepository(
             val successResponse = apiService.getSearchComplaints(query)
             emit(successResponse)
         } catch(e: HttpException) {
+            throw e
         }
     }
 
@@ -37,6 +38,7 @@ class ComplaintRepository(
             val successResponse = apiService.getDetailComplaint(id)
             emit(successResponse)
         } catch(e: HttpException) {
+            throw e
         }
     }
 

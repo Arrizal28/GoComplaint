@@ -88,6 +88,8 @@ fun AddScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    var snackbarSuccess by remember { mutableStateOf(false) }
+
     fun showSnackbar(message: String) {
         scope.launch {
             snackbarHostState.showSnackbar(
@@ -106,11 +108,13 @@ fun AddScreen(
 
         is UiState.Success -> {
             navigate()
+            snackbarSuccess = true
             showSnackbar(context.getString(R.string.success_add_complaint))
         }
 
         is UiState.Error -> {
             Error()
+            showSnackbar((uiState as UiState.Error).errorMessage)
         }
     }
 
@@ -119,7 +123,7 @@ fun AddScreen(
             SnackbarHost(hostState = snackbarHostState) {
                 Snackbar(
                     snackbarData = it,
-                    containerColor = Color.Green
+                    containerColor = if (snackbarSuccess) Color.Green else Color.Red
                 )
             }
         },

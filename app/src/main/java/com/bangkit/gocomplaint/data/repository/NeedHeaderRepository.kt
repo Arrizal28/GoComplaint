@@ -44,6 +44,7 @@ class NeedHeaderRepository(
                 )
                 emit(successResponse)
             } catch (e: HttpException) {
+                throw e
             }
         }
 
@@ -52,6 +53,7 @@ class NeedHeaderRepository(
             val successResponse = apiService.addComment(addCommentRequest)
             emit(successResponse)
         } catch (e: HttpException) {
+            throw e
         }
     }
 
@@ -60,6 +62,7 @@ class NeedHeaderRepository(
             val successResponse = apiService.deleteComplaint(id)
             emit(successResponse)
         } catch (e: HttpException) {
+            throw e
         }
     }
 
